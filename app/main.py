@@ -1,5 +1,6 @@
 from app.exception import InvalidParameter
 
+
 def get_human_age(cat_age: int, dog_age: int) -> list:
     """
     Convert cat and dog ages to human years.
@@ -46,5 +47,3 @@ def get_human_age(cat_age: int, dog_age: int) -> list:
                 dog_age -= 5
 
     return [cat_to_human, dogs_to_human]
-
-

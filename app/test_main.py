@@ -69,8 +69,9 @@ from app.exception import InvalidParameter
         ),
     ],
 )
-def test_get_human_age(cat_age, dog_age, result) -> None:
+def test_get_human_age(cat_age: int, dog_age: int, result: list) -> None:
     assert get_human_age(cat_age, dog_age) == result
+
 
 @pytest.mark.parametrize(
     "cat_age, result",
@@ -81,7 +82,7 @@ def test_get_human_age(cat_age, dog_age, result) -> None:
         pytest.param(24, [2, 0], id="cat age 24"),
     ],
 )
-def test_cat_age_boundaries(cat_age, result) -> None:
+def test_cat_age_boundaries(cat_age: int, result: list) -> None:
     assert get_human_age(cat_age, 0) == result
 
 
@@ -94,7 +95,7 @@ def test_cat_age_boundaries(cat_age, result) -> None:
         pytest.param(24, [0, 2], id="dog age 24"),
     ],
 )
-def test_dog_age_boundaries(dog_age, result) -> None:
+def test_dog_age_boundaries(dog_age: int, result: list) -> None:
     assert get_human_age(0, dog_age) == result
 
 
@@ -106,6 +107,6 @@ def test_dog_age_boundaries(dog_age, result) -> None:
         pytest.param(-1, -1, id="both negative ages"),
     ]
 )
-def test_raise_exception(cat_age, dog_age) -> None:
+def test_raise_exception(cat_age: int, dog_age: int) -> None:
     with pytest.raises(InvalidParameter):
         get_human_age(cat_age, dog_age)
