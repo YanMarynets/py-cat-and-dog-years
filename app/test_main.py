@@ -1,37 +1,111 @@
+import pytest
+
 from app.main import get_human_age
+from app.exception import InvalidParameter
 
 
-def test_should_return_list_with_two_elements() -> None:
-    assert len(get_human_age(1, 1)) == 2, (
-        "resulted list must consist of 2 items"
-    )
+@pytest.mark.parametrize(
+    "cat_age, dog_age, result",
+    [
+        pytest.param(
+            0,
+            0,
+            [0, 0],
+            id="should return 0 if pets age is 0",
+        ),
+        pytest.param(
+            14,
+            14,
+            [0, 0],
+            id="should return 0 if pets age is less than 15",
+        ),
+        pytest.param(
+            15,
+            15,
+            [1, 1],
+            id="should return 1 if pets age is 15",
+        ),
+        pytest.param(
+            23,
+            23,
+            [1, 1],
+            id="should return 1 if pets age is less than 24",
+        ),
+        pytest.param(
+            24,
+            24,
+            [2, 2],
+            id="should return 2 if pets age is 24",
+        ),
+        pytest.param(
+            28,
+            28,
+            [3, 2],
+            id="should add 1 every 4 years for cats",
+        ),
+        pytest.param(
+            32,
+            32,
+            [4, 3],
+            id="should add 1 every 4 years for cats",
+        ),
+        pytest.param(
+            29,
+            29,
+            [3, 3],
+            id="should add 1 every 5 years for dogs",
+        ),
+        pytest.param(
+            34,
+            34,
+            [4, 4],
+            id="should add 1 every 5 years for dogs",
+        ),
+        pytest.param(
+            100,
+            100,
+            [21, 17],
+            id="should correctly calculate large pet ages",
+        ),
+    ],
+)
+def test_get_human_age(cat_age, dog_age, result) -> None:
+    assert get_human_age(cat_age, dog_age) == result
+
+@pytest.mark.parametrize(
+    "cat_age, result",
+    [
+        pytest.param(14, [0, 0], id="cat age 14"),
+        pytest.param(15, [1, 0], id="cat age 15"),
+        pytest.param(23, [1, 0], id="cat age 23"),
+        pytest.param(24, [2, 0], id="cat age 24"),
+    ],
+)
+def test_cat_age_boundaries(cat_age, result) -> None:
+    assert get_human_age(cat_age, 0) == result
 
 
-def test_should_return_0_if_pets_age_under_15() -> None:
-    assert get_human_age(12, 14) == [0, 0], (
-        "Pet's age under 15 should equal 0"
-    )
+@pytest.mark.parametrize(
+    "dog_age, result",
+    [
+        pytest.param(14, [0, 0], id="dog age 14"),
+        pytest.param(15, [0, 1], id="dog age 15"),
+        pytest.param(23, [0, 1], id="dog age 23"),
+        pytest.param(24, [0, 2], id="dog age 24"),
+    ],
+)
+def test_dog_age_boundaries(dog_age, result) -> None:
+    assert get_human_age(0, dog_age) == result
 
 
-def test_should_return_1_if_pets_age_under_24() -> None:
-    assert get_human_age(23, 15) == [1, 1], (
-        "Pet's age from 15 to 24 should equal 1"
-    )
-
-
-def test_add_1_every_4_years_after_24_for_cats() -> None:
-    assert get_human_age(28, 0) == [3, 0], (
-        "Cat's human age should increase by 1 every 4 years after 24"
-    )
-
-
-def test_add_1_every_5_years_after_24_for_dogs() -> None:
-    assert get_human_age(0, 29) == [0, 3], (
-        "Dog's human age should increase by 1 every 5 years after 24"
-    )
-
-
-def test_should_correctly_calculate_large_pet_ages() -> None:
-    assert get_human_age(100, 100) == [21, 17], (
-        "Human age should be correctly calculated for large pet ages"
-    )
+@pytest.mark.parametrize(
+    "cat_age, dog_age",
+    [
+        pytest.param(-1, 10, id="negative cat age"),
+        pytest.param(10, -1, id="negative dog age"),
+        pytest.param(-1, -1, id="both negative ages"),
+    ]
+)
+def test_raise_exception(cat_age, dog_age) -> None:
+    with pytest.raises(InvalidParameter):
+        get_human_age(cat_age, dog_age)
