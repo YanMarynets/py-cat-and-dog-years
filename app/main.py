@@ -1,4 +1,4 @@
-from app.exception import InvalidParameter
+from app.exception import InvalidParameter, InvalidParameterType
 
 
 def get_human_age(cat_age: int, dog_age: int) -> list:
@@ -21,6 +21,8 @@ def get_human_age(cat_age: int, dog_age: int) -> list:
         get_human_age(15, 15) == [1, 1]
         get_human_age(24, 24) == [2, 2]
     """
+    if type(cat_age) is not int or type(dog_age) is not int:
+        raise InvalidParameterType("Age must be an integer!")
     if cat_age < 0 or dog_age < 0:
         raise InvalidParameter("Age must be a positive number!")
     cat_to_human = 0

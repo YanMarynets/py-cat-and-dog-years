@@ -1,7 +1,7 @@
 import pytest
 
 from app.main import get_human_age
-from app.exception import InvalidParameter
+from app.exception import InvalidParameter, InvalidParameterType
 
 
 @pytest.mark.parametrize(
@@ -109,4 +109,23 @@ def test_dog_age_boundaries(dog_age: int, result: list) -> None:
 )
 def test_raise_exception(cat_age: int, dog_age: int) -> None:
     with pytest.raises(InvalidParameter):
+        get_human_age(cat_age, dog_age)
+
+
+@pytest.mark.parametrize(
+    "cat_age, dog_age",
+    [
+        pytest.param("15", 15, id="string cat age"),
+        pytest.param(15, "15", id="string dog age"),
+        pytest.param(15.5, 15, id="float cat age"),
+        pytest.param(15, 15.5, id="float dog age"),
+        pytest.param(15, True, id="float dog age"),
+        pytest.param(True, 15, id="float dog age"),
+    ],
+)
+def test_raise_exception_for_invalid_datatype(
+        cat_age: str | int | float | bool,
+        dog_age: str | int | float | bool
+) -> None:
+    with pytest.raises(InvalidParameterType):
         get_human_age(cat_age, dog_age)
